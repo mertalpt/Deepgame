@@ -14,6 +14,7 @@ Games integrating our product will have the option to customize characters via f
 * <a href="pdfs/Deepgame - Project Analysis Report.pdf" class="image fit"><img src="images/marr_pic.jpg" alt="">Project Analysis Report</a>
 * <a href="pdfs/Deepgame - High Level Design Report.pdf" class="image fit"><img src="images/marr_pic.jpg" alt="">High Level Design Report</a>
 * <a href="pdfs/Deepgame - Low Level Design Report.pdf" class="image fit"><img src="images/marr_pic.jpg" alt="">Low Level Design Report</a>
+* <a href="pdfs/Deepgame - Final Report.pdf" class="image fit"><img src="images/marr_pic.jpg" alt="">Final Report</a>
 
 ### Supervisor
 * Dr. Uğur Güdükbay
