@@ -1,1 +1,2 @@
 autocrop
+kora
