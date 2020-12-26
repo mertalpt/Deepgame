@@ -42,13 +42,13 @@ class DGVideo:
       dg_frame = DGImage.from_image(frame, size)
       self.frames.append(dg_frame)
 
-  
+
   ### "Private" Methods
 
   def __len__(self):
     return len(self.frames)
 
-  
+
   ### Builders
 
   def from_path(path, size=None, fps=None):
@@ -68,7 +68,7 @@ class DGVideo:
     for frame in reader:
       frames.append(frame)
     reader.close()
-    
+
     video = DGVideo(frames, size, fps)
     return video
 
@@ -142,7 +142,7 @@ class DGVideo:
     if index >= len(self):
       raise IndexError('Given index {} is out of bounds for {} frames.'.format(
               str(index), str(len(self))))
-      
+
     return self.frames[index]
 
 
@@ -168,7 +168,7 @@ class DGVideo:
 
   def extract_faces(self, size=None, face_percent=50, padding=None, fix_gamma=True):
     """
-      Uses face cropper of 'autocrop' pip package to extract the face 
+      Uses face cropper of 'autocrop' pip package to extract the face
       from the image. Check the documentation linked below for more information.
 
       https://github.com/leblancfg/autocrop
@@ -188,6 +188,24 @@ class DGVideo:
         frames.append(tmp.get_image())
 
     return DGVideo.from_video(frames, fps=self.fps)
+
+
+  def swap_color_range(self, lower, upper, new_color):
+    """
+      Swaps the color of every pixel that falls within the color range to the
+      given new color. Does this for every frame in the video and produces
+      a new video.
+
+      :param lower: 8-bit RGBA color lower limit of the pixels to change.
+      :param upper: 8-bit RGBA color upper limit of the pixels to change.
+      :param new_color: 8-bit RGBA color to swap with the old color.
+      :returns: New DGVideo with colors swapped for every frame.
+    """
+    tmp = list()
+    for frame in self.frames:
+      curr = frame.swap_color_range(lower, upper, new_color)
+      tmp.append(curr.image)
+    return DGVideo.from_video(tmp)
 
 
   def animation(self, title='Animated Video', interval=None, repeat_delay=1000):
@@ -211,8 +229,8 @@ class DGVideo:
       tmp = plt.imshow(frame, animated=True)
       converted.append([tmp])
 
-    anim = animation.ArtistAnimation(figure, converted, 
-                                     interval=interval, 
+    anim = animation.ArtistAnimation(figure, converted,
+                                     interval=interval,
                                      repeat_delay=repeat_delay)
     plt.close()
 

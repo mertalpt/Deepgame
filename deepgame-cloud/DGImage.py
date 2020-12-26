@@ -69,7 +69,7 @@ class DGImage:
     data = sk_io.imread(path)
     return DGImage(data, size)
 
-  
+
   def from_image(data, size=None):
     """
       Takes the image as a numpy array and formats it into a DGImage.
@@ -111,7 +111,7 @@ class DGImage:
     """
     return DGImage.from_image(self.image, size=size)
 
-  
+
   def get_image(self, mode='rgba', type='int'):
     """
       Returns a copy of the image data with the given mode.
@@ -134,7 +134,7 @@ class DGImage:
       tmp = self._image_in_gray()
     else:
       raise ValueError('Unrecognized value {} for mode.'.format(str(mode)))
-    
+
     # Cast and normalize
     if type == 'int' and tmp.dtype != np.uint8:
       tmp = tmp * 255.0
@@ -154,7 +154,7 @@ class DGImage:
 
   def extract_face(self, size=None, face_percent=50, padding=None, fix_gamma=True):
     """
-      Uses face cropper of 'autocrop' pip package to extract the face 
+      Uses face cropper of 'autocrop' pip package to extract the face
       from the image. Check the documentation linked below for more information.
 
       https://github.com/leblancfg/autocrop
@@ -175,7 +175,7 @@ class DGImage:
 
     # Initialize cropper
     cropper = Cropper(
-        width=size[1], height=size[0], 
+        width=size[1], height=size[0],
         face_percent=face_percent, padding=padding, fix_gamma=fix_gamma)
     cropped = cropper.crop(image)
 
@@ -215,6 +215,33 @@ class DGImage:
     dx = (shape[0] - new_shape) // 2
     dy = (shape[1] - new_shape) // 2
     image = image[dx:new_shape+dx, dy:new_shape+dy]
+    return DGImage.from_image(image)
+
+
+  def swap_color_range(self, lower, upper, new_color):
+    """
+      Swaps the color of every pixel that falls within the color range to the
+      given new color.
+
+      :param lower: 8-bit RGBA color lower limit of the pixels to change.
+      :param upper: 8-bit RGBA color upper limit of the pixels to change.
+      :param new_color: 8-bit RGBA color to swap with the old color.
+      :returns: New DGImage with colors swapped.
+    """
+    # Adapted from https://stackoverflow.com/a/17310029
+    image = self.get_image()
+    lr, lg, lb, la = lower
+    ur, ug, ub, ua = upper
+    r, g, b, a = new_color
+    red, green, blue, alpha = image[:,:,0], image[:,:,1], image[:,:,2], image[:,:,3]
+
+    mask = ((lr <= red) & (red <= ur)
+         &  (lg <= green) & (green <= ug)
+         &  (lb <= blue) & (blue <= ub)
+         &  (la <= alpha) & (alpha <= ua))
+
+    image[:,:,:4][mask] = [r, g, b, a]
+
     return DGImage.from_image(image)
 
 
